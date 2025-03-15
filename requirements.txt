@@ -10,3 +10,4 @@ regex
 fsspec
 huggingface_hub
 faiss-cpu
+python-dotenv

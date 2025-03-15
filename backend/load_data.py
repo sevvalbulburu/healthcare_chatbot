@@ -4,12 +4,17 @@ import re
 import numpy as np
 import faiss
 from openai import OpenAI
-import concurrent.futures
+import concurrent.futures # for parallel threading
+from dotenv import load_dotenv
+import os
 
 
-API_KEY = "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"
-df_link = "hf://datasets/codexist/medical_data/data/train-00000-of-00001.parquet"
+load_dotenv()
+API_KEY = os.getenv("OPENAI_API_KEY")
+    
 client = OpenAI(api_key=API_KEY)
+
+df_link = "hf://datasets/codexist/medical_data/data/train-00000-of-00001.parquet"
 
 # Load the dataset from huggingface 
 def load_data():
@@ -32,18 +37,6 @@ text_splitter = RecursiveCharacterTextSplitter(
     chunk_overlap = 150,
     length_function=len
 )
-
-# Generate embeddings using OpenAI
-#def generate_embeddings(texts):
-#    embeddings = []
-#    for text in texts:
-#        response = client.embeddings.create(
-#            input=text,
-#            model="text-embedding-3-small"
-#        )
-#        embedding = response.data[0].embedding
-#        embeddings.append(embedding)
-#    return np.array(embeddings)
 
 def generate_embeddings(texts):
     def fetch_embedding(text, index):
