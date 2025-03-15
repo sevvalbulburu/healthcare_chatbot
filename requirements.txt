@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+pydantic==1.10.21
+requests
+streamlit
+langchain
+openai 
+pandas
+regex
+fsspec
+huggingface_hub
+faiss-cpu

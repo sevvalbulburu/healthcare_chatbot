@@ -1,0 +1,26 @@
+The goal is to design and implement a business-focused chatbot for the healthcare sector.
+The chatbot should assist patients and healthcare professionals by answering common
+medical queries, providing information about symptoms, and helping users create and list
+appointments through messaging.
+
+
+Your responsibilities are;
+- Build an application that implements a healthcare-focused chatbot capable of answering
+medical queries and performing actions like appointment booking.
+- You can use any frontend technology for the interface (Streamlit or Gradio is required, React
+or Vue is a big plus).
+- Application MUST have a backend server that integrates with an LLM (OpenAI, Antrophic,
+Deepseek, Huggingface Transformers, etc.) and implements Retrieval Augmented Generation
+(RAG).
+- The backend must expose REST API endpoints for appointment booking and booking listing.
+- The chatbot should integrate with a vector database (Pinecone, Weaviate, or FAISS) to store
+and retrieve medical information for RAG functionality. The chatbot must implement toolcalling capabilities using tools like LangChain or Llamaindex to perform actions like
+appointment booking or retrieving patient records.
+- The application should gracefully handle edge cases and out-of-scope queries with
+appropriate fallback responses.
+- The Case Study application should be deployed and accessible online (the platform is up to
+you).
+- Your GitHub Repository for source codes is expected to be shared. (The process will be
+reviewed through your commits. Repositories consisting of a single commit will be left out of
+the assessment!)
+- Here is a dataset to use: https://huggingface.co/datasets/codexist/medical_data
