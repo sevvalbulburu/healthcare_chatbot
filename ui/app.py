@@ -10,8 +10,8 @@ import re
 from datetime import datetime
 
 # Faiss index ve chunk file paths for medical questions
-faiss_path =  "C:/Users/sevva/Documents/GitHub/healthcare_chatbot/data_index.faiss"
-chunks_path = "C:/Users/sevva/Documents/GitHub/healthcare_chatbot/chunks.csv"
+faiss_path =  "C:/Users/sevva/Documents/GitHub/healthcare_chatbot/data_index.faiss" # Use your own path to file
+chunks_path = "C:/Users/sevva/Documents/GitHub/healthcare_chatbot/chunks.csv" # Use your own path to file
 index = load_faiss_index(faiss_path=faiss_path)
 
 # Global Variables

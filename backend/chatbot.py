@@ -49,8 +49,9 @@ agent_prompt = PromptTemplate(
 )
 
 load_dotenv()
-faiss_path = "C:/Users/sevva/Documents/GitHub/healthcare_chatbot/data_index.faiss"
-chunks_path = "C:/Users/sevva/Documents/GitHub/healthcare_chatbot/chunks.csv"
+
+faiss_path = "C:/Users/sevva/Documents/GitHub/healthcare_chatbot/data_index.faiss" # Use your own path to file
+chunks_path = "C:/Users/sevva/Documents/GitHub/healthcare_chatbot/chunks.csv" # Use your own path to file
 
 API_KEY = os.getenv("OPENAI_API_KEY")
 BASE_URL = os.getenv("API_BASE_URL")
