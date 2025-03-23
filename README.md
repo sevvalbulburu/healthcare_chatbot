@@ -57,6 +57,8 @@ healthcare_chatbot/
    The UI will be accessible via a shareable Gradio link.
 
 ## Dataset Files
+Original medical dataset can be downloaded from:
+[Huggingface Link](hf://datasets/codexist/medical_data/data/train-00000-of-00001.parquet)
 Medical dataset files can be downloaded from:
 [Google Drive Link](https://drive.google.com/drive/folders/1aQSwLBLIwGH5u9LwLCHGix9Qh6kbPp6v?usp=drive_link)
 
