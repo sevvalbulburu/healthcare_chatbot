@@ -1,3 +1,7 @@
+'''
+ This file used for load the medical dataset
+ and prepare dataset for RAG Funnctionality.
+'''
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import pandas as pd
 import re

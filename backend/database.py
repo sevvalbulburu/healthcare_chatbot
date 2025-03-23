@@ -1,3 +1,7 @@
+'''
+ This file used for creating a database 
+ and appointments table with sqlite.
+'''
 import sqlite3
 
 DB_NAME = "appointments.db"

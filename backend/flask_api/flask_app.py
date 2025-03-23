@@ -1,4 +1,8 @@
-## This file is for creating api in pythonanywhere.
+'''
+ This file is for creating api in pythonanywhere.
+ It creates booking API. File used in pythonanywhere.com
+ for accesing globally.
+'''
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -18,12 +22,12 @@ from backend.crud import (
 from backend.models import Patient
 
 app = Flask(__name__)
-CORS(app)  # CORS'u etkinleştir
+CORS(app) 
 @app.route("/")
 def home():
     return "Welcome to the Healthcare Chatbot API!"
 
-# Randevu oluşturma
+# Create an appointment
 @app.route("/appointments/", methods=["POST"])
 def add_appointment_endpoint():
     try:
@@ -43,7 +47,7 @@ def add_appointment_endpoint():
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
-# Tüm randevuları listeleme
+# Get all appointment list in database
 @app.route("/appointments/", methods=["GET"])
 def get_all_appointments_endpoint():
     try:
@@ -61,7 +65,7 @@ def get_all_appointments_endpoint():
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
-# Randevu sorgulama (ID ile)
+# Get Appointment by ID 
 @app.route("/appointments/<int:appointment_id>", methods=["GET"])
 def get_appointment_endpoint(appointment_id):
     try:
@@ -82,7 +86,7 @@ def get_appointment_endpoint(appointment_id):
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
-# Hasta bilgisi sorgulama (personal_id ile)
+# Get Patient Information by personal ID
 @app.route("/patients/<string:personal_id>", methods=["GET"])
 def get_patient_info_endpoint(personal_id):
     try:
@@ -106,7 +110,7 @@ def get_patient_info_endpoint(personal_id):
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
-# Randevu güncelleme
+# Update appointment date or time
 @app.route("/appointments/<int:appointment_id>", methods=["PUT"])
 def update_appointment_endpoint(appointment_id):
     try:
@@ -118,7 +122,7 @@ def update_appointment_endpoint(appointment_id):
     except Exception as e:
         return jsonify({"message": str(e)}), 400
 
-# Randevu silme
+# Delete an appointment
 @app.route("/appointments/<int:appointment_id>", methods=["DELETE"])
 def delete_appointment_endpoint(appointment_id):
     try:
@@ -127,6 +131,6 @@ def delete_appointment_endpoint(appointment_id):
     except Exception as e:
         return jsonify({"message": str(e)}), 400
 
-# Uygulamayı çalıştır
+# Run app
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)

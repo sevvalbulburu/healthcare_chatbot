@@ -1,4 +1,9 @@
-## Crud operations for database
+'''
+ Crud operations for database 
+ This file includes create delete update and get 
+ functions for creating database.
+ Used in flask_api file.
+ '''
 
 import sys
 import os
@@ -6,11 +11,9 @@ import os
 # Add backend 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
-from database import create_connection, create_booking_table
-from datetime import datetime, date, time
+from database import create_connection
 from models import Patient
 from pydantic import ValidationError
-#from fastapi import HTTPException
 
 connection, cursor = create_connection()
 
@@ -28,7 +31,6 @@ def add_appointment(name: str, surname: str, personal_id: str, date: str, time: 
         )
     except ValidationError as e:
         print(f"Validation error: {e}")
-        return 
 
     try:
         connection, cursor = create_connection()
@@ -144,14 +146,3 @@ def delete_appointment(id: int):
 #Examples
 #delete_appointment(7)
 #add_appointment('Ahmet', 'Metin', '123454', '05-05-2025', '14:20', 'Stomachache')
-#add_appointment('Selin', 'Saz', '123554', '03-05-2025', '08:20', "")
-#add_appointment('Faruk', 'Ölçer', '143554', '13-12-2025', '09:10', "Sprained ankle")
-
-
-#patient = get_patient_info("123456")
-#print(patient)
-#apps = get_all_appointments()
-#if apps:
-#    print(apps)
-#else:
-#    print("No appointments found.")
