@@ -8,16 +8,27 @@ import json
 from langdetect import detect 
 import re
 from datetime import datetime
+import uuid
+
+class SessionState:
+    def __init__(self):
+        self.sessions = {}
+
+    def get_state(self, session_id):
+        if session_id not in self.sessions:
+            self.sessions[session_id] = {
+                "missing_params": [],
+                "reset_status": True,
+                "data": {}
+            }
+        return self.sessions[session_id]
+
+session_state = SessionState()
 
 # Faiss index ve chunk file paths for medical questions
 faiss_path =  "C:/Users/sevva/Documents/GitHub/healthcare_chatbot/data_index.faiss" # Use your own path to file
 chunks_path = "C:/Users/sevva/Documents/GitHub/healthcare_chatbot/chunks.csv" # Use your own path to file
 index = load_faiss_index(faiss_path=faiss_path)
-
-# Global Variables
-missing_params = []
-reset_status = True
-data = {}
 
 # Detect language 
 def detect_language(text):
@@ -135,8 +146,111 @@ def validate_description(description):
     # description lenght mest contain less than 500 letters and not be empty
     return len(description) > 0 and len(description) <= 500
 
-# Function to handle responses
 def respond(
+    message,
+    history: list[tuple[str, str]],
+    system_message, 
+    max_tokens,
+    temperature,
+    top_p,
+    state,
+):
+    if state is None or isinstance(state, float):
+        state = {
+            "missing_params": [],
+            "reset_status": True,
+            "data": {},
+            "session_id": str(uuid.uuid4())  # Oturum ID'si
+        }
+    
+    # State'ten verileri al
+    missing_params = state["missing_params"]
+    data = state["data"]
+    print(missing_params)
+    # Örnek: Kullanıcı mesajını state'e kaydet
+    data["query"] = message
+
+    # Eksik parametre kontrolü (önceki kodunuzdan)
+    if state["reset_status"]:
+        response = analyze_request(message)
+        action = response.get("action")
+        print(action)
+        data.update(response)
+        data["query"] = message
+        state["reset_status"] = False
+    else:
+        if message_valid(missing_params, message):
+            data[missing_params[0]] = message
+            missing_params.pop(0)
+            if len(missing_params) == 0:
+                input_data = json.dumps(data)
+                result = agent.invoke({"input": input_data})
+                # State'i resetle
+                state.update({
+                    "missing_params": [],
+                    "reset_status": True,
+                    "data": {}
+                })
+                return result["output"]
+            else:
+                lng = get_translated_message(detect_language(message))
+                response = f"{lng} {missing_params[0]}"
+                return response, state
+        else:
+            response = f"Wrong input. Please try again {missing_params[0]}:"
+            return response
+
+    # Medical Question
+    if action == "medical_question":
+        query = data["query"]
+        state.update({
+            "missing_params": [],
+            "reset_status": True,
+            "data": {}
+        })
+        return handle_med_question(query=query, faiss_index=index, chunk_path=chunks_path)
+    
+    # Invalid Question
+    elif action == "invalid":
+        state.update({
+            "missing_params": [],
+            "reset_status": True,
+            "data": {}
+        })
+        return invalid_question(message)
+    
+    # Diğer durumlar
+    else:
+        missing_params = check_missing_params(data)
+        if len(missing_params) == 0:
+            input_data = json.dumps(data)
+            result = agent.invoke({"input": input_data})
+            state.update({
+                "missing_params": [],
+                "reset_status": True,
+                "data": {}
+            })
+            return result["output"]
+        else:
+            lng = get_translated_message(detect_language(message))
+            response = f"{lng} {missing_params[0]}"
+            return response
+
+
+def wrapper_fn(message, history, system_message, max_tokens, temperature, top_p):
+    # Session ID oluştur (basit bir yöntem)
+    session_id = str(hash(json.dumps(history))) if history else str(uuid.uuid4())
+    state = session_state.get_state(session_id)
+    
+    # Ana fonksiyonu çağır
+    response = respond(message, history, system_message, max_tokens, temperature, top_p, state)
+    
+    # State'i güncelle
+    session_state.sessions[session_id] = state
+    return response
+
+# Function to handle responses
+def respond2(
     message,
     history: list[tuple[str, str]],
     system_message, 
@@ -197,7 +311,7 @@ def respond(
 
 # Gradio ChatInterface
 demo = gr.ChatInterface(
-    respond,
+    wrapper_fn,
     additional_inputs=[
         gr.Textbox(value="You are a friendly Chatbot.", label="System message"),
         gr.Slider(minimum=1, maximum=2048, value=512, step=1, label="Max new tokens"),

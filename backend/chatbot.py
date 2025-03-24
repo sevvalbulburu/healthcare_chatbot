@@ -2,18 +2,17 @@ import faiss
 from openai import OpenAI
 import numpy as np
 from dotenv import load_dotenv
+import ast
 import os
 import sys
 import pandas as pd
+from langchain.memory.buffer import ConversationBufferMemory
 from langchain.schema import Document
 from langchain_openai import ChatOpenAI
-from langchain.agents import initialize_agent, AgentType
+from langchain.prompts import PromptTemplate
+from langchain.agents import initialize_agent, AgentType, Tool
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from backend.api_endpoints import add_appointment, get_all_appointments, get_appointment_by_id, update_appointment, delete_appointment
-from langchain.agents import Tool
-from langchain.prompts import PromptTemplate
-import ast
-from langchain.memory.buffer import ConversationBufferMemory
 
 agent_prompt = PromptTemplate(
     input_variables=["input"],

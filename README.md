@@ -68,10 +68,176 @@ Run unit tests for CRUD operations:
 pytest tests/crud_test.py
 ```
 
+## API Endpoints
+# Healthcare Chatbot API
+
+This API provides endpoints for managing appointments and retrieving patient information. It is designed to be used by the Healthcare Chatbot to facilitate appointment booking, retrieval, and updates.
+
+## Endpoints
+
+### 1. Home
+**Endpoint:** `GET /`
+
+Returns a welcome message indicating that the API is running.
+
+### 2. Create an Appointment
+**Endpoint:** `POST /appointments/`
+
+**Request Body:**
+```json
+{
+    "name": "John",
+    "surname": "Doe",
+    "personal_id": "123456789",
+    "date": "2025-04-01",
+    "time": "10:00",
+    "description": "General check-up"
+}
+```
+**Response:**
+```json
+{
+    "message": "Appointment booked successfully"
+}
+```
+
+### 3. Get All Appointments
+**Endpoint:** `GET /appointments/`
+
+**Response:**
+```json
+{
+    "appointments": [
+        {
+            "id": 1,
+            "name": "John",
+            "surname": "Doe",
+            "personal_id": "123456789",
+            "date": "2025-04-01",
+            "time": "10:00",
+            "description": "General check-up"
+        }
+    ]
+}
+```
+
+### 4. Get Appointment by ID
+**Endpoint:** `GET /appointments/{appointment_id}`
+
+**Example Request:** `GET /appointments/1`
+
+**Response:**
+```json
+{
+    "id": 1,
+    "name": "John",
+    "surname": "Doe",
+    "personal_id": "123456789",
+    "date": "2025-04-01",
+    "time": "10:00",
+    "description": "General check-up"
+}
+```
+
+### 5. Get Patient Information
+**Endpoint:** `GET /patients/{personal_id}`
+
+**Example Request:** `GET /patients/123456789`
+
+**Response:**
+```json
+{
+    "general_info": {
+        "name": "John",
+        "surname": "Doe",
+        "personal_id": "123456789"
+    },
+    "appointments": [
+        {
+            "id": 1,
+            "date": "2025-04-01",
+            "time": "10:00",
+            "description": "General check-up"
+        }
+    ]
+}
+```
+
+### 6. Update an Appointment
+**Endpoint:** `PUT /appointments/{appointment_id}`
+
+**Example Request:** `PUT /appointments/1`
+
+**Request Body:**
+```json
+{
+    "date": "2025-04-02",
+    "time": "11:00"
+}
+```
+**Response:**
+```json
+{
+    "message": "Appointment updated successfully"
+}
+```
+
+### 7. Delete an Appointment
+**Endpoint:** `DELETE /appointments/{appointment_id}`
+
+**Example Request:** `DELETE /appointments/1`
+
+**Response:**
+```json
+{
+    "message": "Appointment deleted successfully"
+}
+```
+
+## API Call Examples
+- This API is designed to work with the Healthcare Chatbot to manage patient appointments efficiently.
+
+Here are examples of how to call the API endpoints using `curl`:
+
+### Create an Appointment
+```sh
+curl -X POST "http://your-api-url/appointments/" -H "Content-Type: application/json" -d '{
+    "name": "John",
+    "surname": "Doe",
+    "personal_id": "123456789",
+    "date": "2025-04-01",
+    "time": "10:00",
+    "description": "General check-up"
+}'
+```
+
+### Get All Appointments
+```sh
+curl -X GET "http://your-api-url/appointments/"
+```
+
+### Get Appointment by ID
+```sh
+curl -X GET "http://your-api-url/appointments/1"
+```
+
+### Update an Appointment
+```sh
+curl -X PUT "http://your-api-url/appointments/1" -H "Content-Type: application/json" -d '{
+    "date": "2025-04-02",
+    "time": "11:00"
+}'
+```
+
+### Delete an Appointment
+```sh
+curl -X DELETE "http://your-api-url/appointments/1"
+```
+
 ## Notes
 - Originally, the booking API was built with FastAPI, but it was later converted to Flask due to PythonAnywhere’s lack of FastAPI support.
 - The Flask API is deployed as a web service on PythonAnywhere, requiring an account and proper setup to modify.
-- The chatbot is designed for local hosting but can be accessed online with Gradio’s `share=True` feature.
+- The chatbot is first, designed for local hosting. After, shared in Huggingface Space.
 
 ## Contribution
 Feel free to contribute by opening a pull request or reporting issues.
