@@ -242,6 +242,14 @@ curl -X DELETE "http://your-api-url/appointments/1"
 ## Contribution
 Feel free to contribute by opening a pull request or reporting issues.
 
+## Result Example
+![Result Example](results/example1.png)
+
+## Interface and Application
+The interface is a simple web page that allows users to interact with the booking API. It shared in Huggingface-Space platform.
+It can be accessed via:
+[Application](https://huggingface.co/spaces/sevvalbulburu/health_care_chatbot)
+
 ---
 
 For further inquiries, contact [Şevval Bulburu](https://github.com/sevvalbulburu).
