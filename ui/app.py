@@ -143,7 +143,7 @@ def validate_date(date):
     return False 
 
 def validate_description(description):
-    # description lenght mest contain less than 500 letters and not be empty
+    # description lenght must contain less than 500 letters and not be empty
     return len(description) > 0 and len(description) <= 500
 
 def respond(
@@ -160,17 +160,15 @@ def respond(
             "missing_params": [],
             "reset_status": True,
             "data": {},
-            "session_id": str(uuid.uuid4())  # Oturum ID'si
+            "session_id": str(uuid.uuid4())  
         }
-    
-    # State'ten verileri al
+ 
     missing_params = state["missing_params"]
     data = state["data"]
     print(missing_params)
-    # Örnek: Kullanıcı mesajını state'e kaydet
     data["query"] = message
 
-    # Eksik parametre kontrolü (önceki kodunuzdan)
+    # Check missing params
     if state["reset_status"]:
         response = analyze_request(message)
         action = response.get("action")
@@ -219,7 +217,7 @@ def respond(
         })
         return invalid_question(message)
     
-    # Diğer durumlar
+    # Appointment processes
     else:
         missing_params = check_missing_params(data)
         if len(missing_params) == 0:
@@ -242,71 +240,12 @@ def wrapper_fn(message, history, system_message, max_tokens, temperature, top_p)
     session_id = str(hash(json.dumps(history))) if history else str(uuid.uuid4())
     state = session_state.get_state(session_id)
     
-    # Ana fonksiyonu çağır
+    # Call main function
     response = respond(message, history, system_message, max_tokens, temperature, top_p, state)
     
-    # State'i güncelle
+    # Update state
     session_state.sessions[session_id] = state
     return response
-
-# Function to handle responses
-def respond2(
-    message,
-    history: list[tuple[str, str]],
-    system_message, 
-    max_tokens,
-    temperature,
-    top_p,
-):
-    global missing_params, reset_status, data
-
-    if reset_status:
-        response = analyze_request(message)
-        action = response.get("action")
-        data = response  # data dictionary, includes JSON data from analyze_request
-        data["query"] = message
-        reset_status = False
-    else:
-        if message_valid(missing_params, message):
-            data[missing_params[0]] = message
-            missing_params.pop(0)
-            if len(missing_params) == 0:
-                # If missing parameters are None, Call API 
-                input_data = json.dumps(data)  # Dictionary to JSON string
-                result = agent.invoke({"input": input_data})
-                missing_params, reset_status, data = [], True, {}
-                return result["output"]  
-            else:
-                # If missing parameters exist
-                lng = get_translated_message(detect_language(message))  
-                response = f"{lng} {missing_params[0]}"
-                return response        
-        else:
-            response = f"Wrong input. Please try again {missing_params[0]}:"
-            return response
-
-    # Medical Question
-    if action == "medical_question":
-        query = data["query"]
-        missing_params, reset_status, data = [], True, {}
-        return handle_med_question(query=query, faiss_index=index, chunk_path=chunks_path)
-    # Invalid Question
-    elif action == "invalid":
-        missing_params, reset_status, data = [], True, {}
-        return invalid_question(message)
-    else:
-        missing_params = check_missing_params(data)
-        if len(missing_params) == 0:
-            #  If missing parameters are None, Call API 
-            input_data = json.dumps(data)  # Dictionary to JSON string
-            result = agent.invoke({"input": input_data})
-            missing_params, reset_status, data = [], True, {}
-            return result["output"]  
-        else:
-            # If missing parameters exist
-            lng = get_translated_message(detect_language(message))  
-            response = f"{lng} {missing_params[0]}"
-            return response
 
 
 # Gradio ChatInterface
